@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,8 +55,6 @@ public class StartFragment extends Fragment implements IStartView, View.OnClickL
         return v;
     }
 
-
-
     @Override
     public void updateRandomJoke(Joke joke) {
 
@@ -80,8 +76,10 @@ public class StartFragment extends Fragment implements IStartView, View.OnClickL
     @Override
     public void showSourcesList(List<Source> list) {
 
-        for (Source item : list)
-            addCardView(layout, item);
+        for (int i=0; i<list.size(); i++)
+            addCardView(layout, list.get(i), i);
+        //for (Source item : list)
+        //    addCardView(layout, item, list.ge);
         /*
         SourcesAdapter adapter = new SourcesAdapter(list);
 
@@ -100,6 +98,17 @@ public class StartFragment extends Fragment implements IStartView, View.OnClickL
     }
 
     @Override
+    public void showListFragment(Source source) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("SOURCE", source);
+        JokesListFragment listFragment = new JokesListFragment();
+        listFragment.setArguments(bundle);
+
+        getFragmentManager().beginTransaction()
+                .add(R.id.container, listFragment).commit();
+    }
+
+    @Override
     public void showError(String error) {
         Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
     }
@@ -108,16 +117,25 @@ public class StartFragment extends Fragment implements IStartView, View.OnClickL
     public void onClick(View v) {
         if (v.getId() == R.id.randomTextView)
             presenter.loadRandom();
+        else {
+            if (v.getTag() != null) {
+                Integer position = (Integer) v.getTag();
+                Log.d("TAG", "clicked = " + position);
+                presenter.clickedToIndex(position);
+            }
+        }
     }
 
 
-    private void addCardView(ViewGroup parent, Source source) {
+    private void addCardView(ViewGroup parent, Source source, int i) {
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.item_source, parent, false);
         TextView desc = (TextView) view.findViewById(R.id.item_source_desc);
         TextView name = (TextView) view.findViewById(R.id.item_source_name);
         desc.setText(source.desc);
         name.setText(source.name);
+        view.setTag(i);
+        view.setOnClickListener(this);
 
         layout.addView(view);
     }

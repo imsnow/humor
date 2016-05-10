@@ -26,6 +26,7 @@ public class StartPresenterImpl implements StartPresenter {
 
     private IStartView view;
     private Subscription subscription = Subscriptions.empty();
+    private List<Source> sources;
 
     public StartPresenterImpl(IStartView view) {
         this.view = view;
@@ -93,12 +94,20 @@ public class StartPresenterImpl implements StartPresenter {
                             for (List<Source> innerList : lists)
                                 result.addAll(innerList);
 
+                            sources = result;
                             view.showSourcesList(result);
                         }
                         else
                             view.showEmptyList();
                     }
                 });
+    }
+
+    @Override
+    public void clickedToIndex(int position) {
+        Source item = sources.get(position);
+        if (item != null)
+            view.showListFragment(item);
     }
 
     @Override

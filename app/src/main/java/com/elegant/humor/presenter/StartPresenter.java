@@ -7,5 +7,6 @@ public interface StartPresenter {
 
     void loadRandom();
     void loadSourcesList();
+    void clickedToIndex(int position);
     void onStop();
 }

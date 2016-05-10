@@ -16,5 +16,7 @@ public interface IStartView {
     void showSourcesList(List<Source> list);
     void showEmptyList();
 
+    void showListFragment(Source source);
+
     void showError(String error);
 }

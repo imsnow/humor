@@ -40,7 +40,9 @@ public class ModelImpl implements Model {
 
     @Override
     public Observable<List<Joke>> getJokesList(String site, String name, int n) {
-        return null;
+        return apiInterface.getJokesList(site, name, n)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override
